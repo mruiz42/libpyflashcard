@@ -7,6 +7,7 @@ class Database:
     def __init__(self, path: str):
         self.path = path
         self.db = sqlite3.connect(self.path)
+        self.db.text_factory = str
 
     def close(self):
         self.db.close()
@@ -58,9 +59,10 @@ class Database:
         return decks
 
     # TODO: Check this
-    def list_cards(self, deck_id: str) -> tuple:
+    def list_cards(self, deck_id: str) -> list:
         statement = ("SELECT * FROM CARDS WHERE DECK_ID=(?)")
-        cur = self.db.execute(statement, deck_id)
+        bind = (deck_id, )
+        cur = self.db.execute(statement, bind)
         cards = cur.fetchall()
         return cards
 
