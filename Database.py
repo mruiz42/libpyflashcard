@@ -7,6 +7,7 @@ class Database:
     def __init__(self, path: str):
         self.path = path
         self.db = sqlite3.connect(self.path)
+        self.cur = self.db.cursor()
         self.db.text_factory = str
 
     def close(self):
@@ -54,8 +55,8 @@ class Database:
 
     def list_decks(self):
         statement = ("SELECT * FROM DECKS;")
-        self.db.execute(statement)
-        decks = self.db.cursor().fetchall()
+        self.cur.execute(statement)
+        decks = self.cur.fetchall()
         return decks
 
     # TODO: Check this
@@ -68,7 +69,7 @@ class Database:
 
     def create_deck(self, deck_id: str, vocab_language: str, definition_language: str):
         statement = ("INSERT INTO DECKS VALUES(?, ?, ?);")
-        bind = tuple(deck_id, vocab_language, definition_language)
+        bind = (deck_id, vocab_language, definition_language, )
         self.db.execute(statement, bind)
         self.db.commit()
 
@@ -79,7 +80,7 @@ class Database:
         return languages
 
     def remove_deck(self, deck_id: str):
-        bind = tuple(deck_id)
+        bind = (deck_id, )
         statement = "DELETE FROM STATISTICS WHERE (DECK_ID=?)"
         self.db.execute(statement, bind)
         statement = "DELETE FROM SESSIONS WHERE (DECK_ID=?)"
@@ -91,7 +92,7 @@ class Database:
         self.db.commit()
 
     def check_deck_exist(self, deck_id: str) -> bool:
-        bind = tuple(deck_id)
+        bind = (deck_id, )
         statement = ("SELECT * FROM DECKS WHERE DECK_ID=(?)")
         self.db.execute(statement, bind)
         decks = self.db.cursor().fetchall()
@@ -104,14 +105,14 @@ class Database:
         pass
 
     def add_card_to_deck(self, card: Card):
-        bind = tuple(card.deck_id, card.is_starred, card.vocabulary, card.definition, card.pronunciation)
+        bind = (card.deck_id, card.is_starred, card.vocabulary, card.definition, card.pronunciation, )
         statement = ("INSERT INTO CARDS (DECK_ID, IS_STARRED, VOCABULARY, DEFINITION, PRONUNCIATION)"
                      "VALUES(?, ?, ?, ?, ?);")
         self.db.execute(statement, bind)
         self.db.commit()
 
     def add_card_to_deck_v2(self, deck_id: str, is_starred: bool, vocabulary: str, definition: str, pronunciation: str):
-        bind = tuple(deck_id, is_starred, vocabulary, definition, pronunciation)
+        bind = (deck_id, is_starred, vocabulary, definition, pronunciation, )
         statement = ("INSERT INTO CARDS (DECK_ID, IS_STARRED, VOCABULARY, DEFINITION, PRONUNCIATION)"
                      "VALUES(?, ?, ?, ?, ?);")
         self.db.execute(statement, bind)

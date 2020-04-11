@@ -2,41 +2,39 @@ from Database import Database
 from argparse import *
 import os
 import sys
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 if __name__ == "__main__":
     db = Database("vocab2.db")
 
     parser = ArgumentParser(prog="libpyflashcard",
-                            description="libpyflashcard command line client, version " + __version__)
-    parser.add_argument("-v", "--verbose", dest="verbose", help="Increase verbosity of output.", action='store_true')
-    parser.add_argument("--init", help="Initialize a new database.")
-    parser.add_argument("-l", "--list", help="Return a list of decks.", nargs='?')
-    parser.add_argument("-a", "--add", help="Add a new deck.")
-    parser.add_argument("-r", "--remove", help="Remove a deck by name.")
-    parser.add_argument("-i", "--import", dest="import_", metavar="IMPORT", help="Import a new deck from csv file.")
-    parser.add_argument("-e", "--export", help="Export a deck to csv file.")
+                            description="libpyflashcard command line client, version " + __version__,
+                            epilog="More information at: <https://github.com/mruiz42/libpyflashcard>")
+
+    parser.add_argument("-V", "--version", dest="VERSION", help="Display current running version of program.")
+    parser.add_argument("-v", "--verbose", dest="VERBOSE", help="Increase verbosity of output.", action='store_true')
+
+    subparsers = parser.add_subparsers(title="SUBPARSERS",
+                                       description="Valid subcommands.",
+                                       help="help")
+
+    parser_list = subparsers.add_parser("list", help="Help")
+    parser_list.add_argument("DECKID", nargs="*")
+
+    parser_delete = subparsers.add_parser("delete")
+    parser_delete.add_argument("DECKID", nargs="*")
+
     args = parser.parse_args()
 
-    if args.verbose:
+    if args.VERBOSE:
         print("verbose")
-    if args.init:
-        print("init")
-    elif args.list:
+    if len(args.DECKID) != 0:
+        print('hi')
+        for row in db.list_cards(' '.join(args.DECKID)):
+            print(row)
+    elif len(args.DECKID) == 0:
         print("hi")
-        cards = db.list_cards(args.list)
-        print(cards)
-    elif args.list == 0:
-        decks = db.list_decks()
-        print(decks)
-    elif args.add:
-        print("add")
-    elif args.remove:
-        print("remove")
-    elif args.import_:
-        print("import")
-    elif args.export:
-        print("export")
-
+        for row in db.list_decks():
+            print(row)
 
 
