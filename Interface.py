@@ -1,6 +1,6 @@
 import argparse
 import sys
-import TypingGame
+from TypingGame import TypingGame
 import datetime
 import sqlite3
 
@@ -39,7 +39,7 @@ class Interface(object):
         args = cli.parse_args(sys.argv[2:])
         deckid = ' '.join(args.deckid)
         if len(args.deckid) != 0:
-            card_list = self.db.list_cards(deckid)
+            card_list = self.db.get_deck(deckid)
             if len(card_list) == 0:
                 print("Nothing to show.")
             else:
@@ -102,18 +102,16 @@ class Interface(object):
         else:
             print("ERROR: \'" + deckid + "\' already exists in database.")
 
-
-
     def study(self):
-        cli = argparse.ArgumentParser(description="create a new study session.")
+        cli = argparse.ArgumentParser(description="start a new study session.")
         cli.add_argument("deckid", nargs="*")
         args = cli.parse_args(sys.argv[2:])
         deckid = ' '.join(args.deckid)
         if len(deckid) == 0:
             deckid = input("Enter name of deck you would like to study: ")
-        if self.db.check_deck_exist(deckid):
-            list_cards = self.db.get_cards(deckid)
-            TypingGame(list_cards)
+        deck = self.db.get_deck(deckid)
+        if len(deck.cards) > 0:
+            TypingGame(deck)
         else:
             print("ERROR: \'" + deckid + "\' does not exists in database.")
 

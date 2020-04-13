@@ -1,5 +1,7 @@
 import sqlite3
 from Card import Card
+from Deck import Deck
+from Statistic import Statistic
 import os
 
 
@@ -60,12 +62,16 @@ class Database:
         return decks
 
     # TODO: Check this
-    def list_cards(self, deck_id: str) -> list:
+    def get_deck(self, deck_id: str) -> list:
         statement = ("SELECT * FROM CARDS WHERE DECK_ID=(?)")
         bind = (deck_id, )
         cur = self.db.execute(statement, bind)
-        cards = cur.fetchall()
-        return cards
+        result = cur.fetchall()
+        deck = Deck(list(), deck_id)
+        for row in result:
+            newcard = Card(row[0], row[1], row[3], row[4], row[5], Statistic(), row[2])
+            deck.cards.append(newcard)
+        return deck
 
     def create_deck(self, deck_id: str, vocab_language: str, definition_language: str):
         statement = ("INSERT INTO DECKS VALUES(?, ?, ?);")
