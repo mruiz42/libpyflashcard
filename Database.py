@@ -53,7 +53,7 @@ class Database:
         self.db.execute(statement)
         self.db.commit()
 
-    def list_decks(self):
+    def list_decks(self) -> list:
         statement = ("SELECT * FROM DECKS;")
         self.cur.execute(statement)
         decks = self.cur.fetchall()
@@ -82,13 +82,13 @@ class Database:
     def remove_deck(self, deck_id: str):
         bind = (deck_id, )
         statement = "DELETE FROM STATISTICS WHERE (DECK_ID=?)"
-        self.db.execute(statement, bind)
+        self.cur.execute(statement, bind)
         statement = "DELETE FROM SESSIONS WHERE (DECK_ID=?)"
-        self.db.execute(statement, bind)
+        self.cur.execute(statement, bind)
         statement = "DELETE FROM CARDS WHERE (DECK_ID=?)"
-        self.db.execute(statement, bind)
+        self.cur.execute(statement, bind)
         statement = "DELETE FROM DECKS WHERE (DECK_ID=?)"
-        self.db.execute(statement, bind)
+        self.cur.execute(statement, bind)
         self.db.commit()
 
     def check_deck_exist(self, deck_id: str) -> bool:
