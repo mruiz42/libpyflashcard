@@ -9,8 +9,15 @@ class Interface(object):
         self.db = db
         # Create main parser object
         cli = argparse.ArgumentParser(prog="libpyflashcard",
-                             description="libpyflashcard command line client, version " + __version__,
-                             epilog="More information at: <https://github.com/mruiz42/libpyflashcard>")
+                            description="libpyflashcard command line client, version " + __version__,
+        #                     usage="""main.py <command> [<args>]
+        # Commands:
+        # init       Initialize database
+        # list       List cards/decks
+        # create     Create a deck
+        # remove     Remove a deck from database
+        #                     """,
+                            epilog="More information at: <https://github.com/mruiz42/libpyflashcard>")
         # Create parser options
         cli.add_argument("-V", "--version", dest="VERSION", help="display current running version of program.",
                          action='store_true')
@@ -57,4 +64,17 @@ class Interface(object):
             print("ERROR: \'" + deckid + "\' does not exist in database.")
 
     def create(self):
+        cli = argparse.ArgumentParser(description="create a new deck.")
+        cli.add_argument("deckid", nargs="*")
+        args = cli.parse_args(sys.argv[2:])
+        deckid = ' '.join(args.deckid)
+        if len(deckid) == 0:
+            deckid = input("Enter name of deck you would like to create: ")
+        if not self.db.check_deck_exist(deckid):
+            self.db.create_deck(deckid)
+            print("SUCCESS: \'" + deckid + "\' created.")
+        else:
+            print("ERROR: \'" + deckid + "\' already exists in database.")
+
+    def init(self):
         pass
