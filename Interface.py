@@ -1,6 +1,9 @@
 import argparse
 import sys
+import TypingGame
+import datetime
 import sqlite3
+
 __version__ = "0.1.2"
 
 
@@ -78,3 +81,41 @@ class Interface(object):
 
     def init(self):
         pass
+
+    def import_(self):
+        # TODO: Finish
+        filename = ""
+        deckid = ""
+        vocab_language = ""
+        definition_language = ""
+
+        cli = argparse.ArgumentParser(description="create a new deck.")
+        cli.add_argument("filename", nargs="*")
+        args = cli.parse_args(sys.argv[2:])
+        filename = ''.join(args.filename)
+
+        if len(filename) == 0:
+            filename = input("Enter filename or path you would like to import: ")
+        if not self.db.check_deck_exist(deckid):
+            self.db.create_deck(deckid)
+            print("SUCCESS: \'" + deckid + "\' created.")
+        else:
+            print("ERROR: \'" + deckid + "\' already exists in database.")
+
+
+
+    def study(self):
+        cli = argparse.ArgumentParser(description="create a new study session.")
+        cli.add_argument("deckid", nargs="*")
+        args = cli.parse_args(sys.argv[2:])
+        deckid = ' '.join(args.deckid)
+        if len(deckid) == 0:
+            deckid = input("Enter name of deck you would like to study: ")
+        if self.db.check_deck_exist(deckid):
+            list_cards = self.db.get_cards(deckid)
+            TypingGame(list_cards)
+        else:
+            print("ERROR: \'" + deckid + "\' does not exists in database.")
+
+
+
