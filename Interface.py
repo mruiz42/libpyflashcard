@@ -1,10 +1,11 @@
 import argparse
 import sys
 from TypingGame import TypingGame
+
 import datetime
 import sqlite3
 
-__version__ = "0.1.2"
+__version__ = "0.1.4"
 
 
 class Interface(object):
@@ -89,7 +90,7 @@ class Interface(object):
         vocab_language = ""
         definition_language = ""
 
-        cli = argparse.ArgumentParser(description="create a new deck.")
+        cli = argparse.ArgumentParser(description="create a new deck.", dest='import')
         cli.add_argument("filename", nargs="*")
         args = cli.parse_args(sys.argv[2:])
         filename = ''.join(args.filename)

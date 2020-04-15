@@ -13,4 +13,6 @@ class Card:
         self.is_starred: bool = is_starred
 
     def __str__(self):
-        return str(self.card_id) + self.vocabulary + " : " + self.definition + " : " + self.pronunciation
+        return (str(self.card_id) + ":" + self.vocabulary + ":" + self.definition + ":" + self.pronunciation
+                + ":" + str(self.stat))
+
