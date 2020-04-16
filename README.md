@@ -20,6 +20,8 @@ https://libflashcard.readthedocs.io/en/latest/
 <br>`python3 main.py list <DECK NAME>` - returns a list of cards within specified deck. </br>
 ##### Importing from csv
 `python3 main.py import <CSV PATH>`
+##### Create a new empty deck
+`python3 main.py create <DECK NAME>` 
 ##### Delete a deck of cards and associated data
 `python3 main.py delete <DECK NAME>`
 ##### Study
