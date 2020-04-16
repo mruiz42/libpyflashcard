@@ -135,17 +135,16 @@ class Interface(object):
     def study(self):
         cli = argparse.ArgumentParser(description="start a new study session.")
         cli.add_argument("deckid", nargs="*")
+        cli.add_argument("--pronunciation", dest="PRONUNCIATION", action='store_true')
         args = cli.parse_args(sys.argv[2:])
         deckid = ' '.join(args.deckid)
         if len(deckid) == 0:
             deckid = input("Enter name of deck you would like to study: ")
         deck = self.db.get_deck(deckid)
         if len(deck.cards) > 0:
-            TypingGame(deck)
+            TypingGame(deck, args.PRONUNCIATION)
         else:
             print("ERROR: \'" + deckid + "\' does not exists in database.")
-
-
 
     def language_prompt(self) -> list:
         languages = ["", "Chinese (Simplified)", "Chinese (Traditional)", "Chinese (Pinyin)", "Spanish", "English", "Hindi", "Arabic",

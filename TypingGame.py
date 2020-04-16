@@ -6,8 +6,9 @@ from Session import Session
 from Statistic import Statistic
 
 class TypingGame:
-    def __init__(self, deck: Deck):
+    def __init__(self, deck: Deck, pronunciation: bool = False):
         self.session = Session()
+        self.show_pronun = pronunciation
         self.deck = deck
         self.play()
 
@@ -27,7 +28,11 @@ class TypingGame:
         for card in self.deck.cards:
             os.system('clear')
             index += 1
-            user_input = input(card.vocabulary + ":")
+            question = card.vocabulary
+            if self.show_pronun:
+                question += "(" + card.pronunciation + ")"
+            question += "\nYour answer: "
+            user_input = input(question)
             valid_answers = self.sanitize_answers(card.definition)
             if self.check_answer(user_input, valid_answers):
                 print("Correct!")
