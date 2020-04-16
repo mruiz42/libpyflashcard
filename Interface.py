@@ -40,11 +40,11 @@ class Interface(object):
         args = cli.parse_args(sys.argv[2:])
         deckid = ' '.join(args.deckid)
         if len(args.deckid) != 0:
-            card_list = self.db.get_deck(deckid)
-            if len(card_list) == 0:
+            deck = self.db.get_deck(deckid)
+            if len(deck.cards) == 0:
                 print("Nothing to show.")
             else:
-                for row in card_list:
+                for row in deck:
                     print(row)
         elif len(args.deckid) == 0:
             if len(self.db.list_decks()) == 0:

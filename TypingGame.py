@@ -12,8 +12,13 @@ class TypingGame:
         self.play()
 
     def play(self) -> None:
+        """
+        Main game loop for Typing Game
+        :return: None
+        """
         __TYPO__ = "!TYPO"
         missed_cards = list()
+        correct_cards = list()
         checkpoint_indices = list()
         index = 0
         for i in range(0, len(self.deck.cards), 10):
@@ -69,8 +74,10 @@ class TypingGame:
 
     def checkpoint(self, missed_cards: list):
         os.system('clear')
+        # TODO: Update database tables here #####################
         print("Missed words:\n")
         for card in missed_cards:
             print(card)
+        print("Correct words:\n")
 
         input("Press ENTER to continue...")
