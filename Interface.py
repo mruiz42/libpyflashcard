@@ -63,8 +63,11 @@ class Interface(object):
         deckid = ' '.join(args.deckid)
         if len(deckid) == 0:
             deckid = input("Enter name of deck you would like to delete: ")
-        if self.db.check_deck_exist(deckid):
+        #if self.db.check_deck_exist(deckid):
+        #TODO: need to fix check_deck_exist() its broken! !
+        if True:
             self.db.remove_deck(deckid)
+            self.db.commit()
             print("SUCCESS: \'" + deckid + "\' removed from database.")
         else:
             print("ERROR: \'" + deckid + "\' does not exist in database.")
@@ -78,12 +81,14 @@ class Interface(object):
             deckid = input("Enter name of deck you would like to create: ")
         if not self.db.check_deck_exist(deckid):
             self.db.create_deck(deckid)
+            self.db.commit()
             print("SUCCESS: \'" + deckid + "\' created.")
         else:
             print("ERROR: \'" + deckid + "\' already exists in database.")
 
     def init(self):
-        pass
+        self.db.initialize()
+        self.db.commit()
 
     def import_(self):
         # TODO: Finish
@@ -100,6 +105,9 @@ class Interface(object):
             filename = input("Enter filename or path you would like to import: ")
         csv = CsvTool(filename)
         rows = csv.get_data()
+        for row in rows:
+            row.insert(0, deckid)
+            row.insert(1, 0)
         languages = self.language_prompt()
         n_languages = len(languages) - 1
         dc = 0
@@ -111,9 +119,12 @@ class Interface(object):
             dc = int(input("Definition language (1-" + str(n_languages) + "): "))
         definition_language = languages[dc]
 
-        if self.db.check_deck_exist(deckid):
+        # if self.db.check_deck_exist(deckid):
+        #TODO: check_deck_exists() is broken!! this is a bandaid fix
+        if True:
             self.db.create_deck(deckid, vocab_language, definition_language)
             self.db.add_many_cards_to_deck(rows)
+            self.db.commit()
             print("SUCCESS: \'" + deckid + "\' created.")
         else:
             print("ERROR: \'" + deckid + "\' already exists in database.")

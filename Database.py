@@ -26,20 +26,17 @@ class Database:
                      "IMAGE_DATA BLOB,"
                      "FOREIGN KEY(DECK_ID) REFERENCES DECKS(DECK_ID));")
         self.db.execute(statement)
-        self.db.commit()
         statement = ("CREATE TABLE IF NOT EXISTS DECKS "
                      "(DECK_ID TEXT PRIMARY KEY,"
                      "VOCABULARY_LANGUAGE TEXT,"
                      "DEFINITION_LANGUAGE TEXT);")
         self.db.execute(statement)
-        self.db.commit()
         statement = ("CREATE TABLE IF NOT EXISTS SESSIONS"
                      "(START_TIME DATE PRIMARY KEY,"
                      "DECK_ID TEXT, "
                      "SESSION_TYPE TEXT, "
                      "FOREIGN KEY(DECK_ID) REFERENCES DECKS(DECK_ID));")
         self.db.execute(statement)
-        self.db.commit()
         statement = ("CREATE TABLE IF NOT EXISTS STATISTICS"
                      "(CARD_ID INTEGER,"
                      "DECK_ID TEXT,"
@@ -50,10 +47,8 @@ class Database:
                      "FOREIGN KEY(DECK_ID) REFERENCES DECKS(DECK_ID),"
                      "FOREIGN KEY(START_TIME) REFERENCES SESSIONS(START_TIME));")
         self.db.execute(statement)
-        self.db.commit()
         statement = ("CREATE TABLE IF NOT EXISTS LANGUAGES (LANGUAGE_NAME TEXT);")
         self.db.execute(statement)
-        self.db.commit()
 
     def list_decks(self) -> list:
         statement = ("SELECT * FROM DECKS;")
@@ -77,8 +72,9 @@ class Database:
         statement = ("INSERT INTO DECKS VALUES(?, ?, ?);")
         bind = (deck_id, vocab_language, definition_language, )
         self.db.execute(statement, bind)
-        self.db.commit()
 
+    def commit(self):
+        self.db.commit()
     # def list_languages(self):
     #     statement = ("SELECT * FROM LANGUAGES;")
     #     self.db.execute(statement)
@@ -95,7 +91,6 @@ class Database:
         self.cur.execute(statement, bind)
         statement = "DELETE FROM DECKS WHERE (DECK_ID=?)"
         self.cur.execute(statement, bind)
-        self.db.commit()
 
     def check_deck_exist(self, deck_id: str) -> bool:
         # TODO: This function sucks
@@ -116,14 +111,12 @@ class Database:
         statement = ("INSERT INTO CARDS (DECK_ID, IS_STARRED, VOCABULARY, DEFINITION, PRONUNCIATION)"
                      "VALUES(?, ?, ?, ?, ?);")
         self.db.execute(statement, bind)
-        self.db.commit()
 
     def add_card_to_deck_v2(self, deck_id: str, is_starred: bool, vocabulary: str, definition: str, pronunciation: str):
         bind = (deck_id, is_starred, vocabulary, definition, pronunciation, )
         statement = ("INSERT INTO CARDS (DECK_ID, IS_STARRED, VOCABULARY, DEFINITION, PRONUNCIATION)"
                      "VALUES(?, ?, ?, ?, ?);")
         self.db.execute(statement, bind)
-        self.db.commit()
 
     def add_many_cards_to_deck(self, cards: tuple):
         statement = ("INSERT INTO CARDS (DECK_ID, IS_STARRED, VOCABULARY, DEFINITION, PRONUNCIATION)"
