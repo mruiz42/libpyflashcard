@@ -1,7 +1,7 @@
 import argparse
 import sys
 from TypingGame import TypingGame
-
+from CsvTool import CsvTool
 import datetime
 import sqlite3
 
@@ -26,8 +26,10 @@ class Interface(object):
         cli.add_argument("-V", "--version", dest="VERSION", help="display current running version of program.",
                          action='store_true')
         cli.add_argument("-v", "--verbose", dest="VERBOSE", help="increase verbosity of output.", action='store_true')
-        cli.add_argument("command", help="subcommand to run.")
+        cli.add_argument("command", help="command to run.")
         args = cli.parse_args(sys.argv[1:2])
+        if args.command == "import":
+            args.command = "import_"
         if not hasattr(self, args.command):
             print("Unrecognized command")
             cli.print_help()
@@ -40,11 +42,11 @@ class Interface(object):
         args = cli.parse_args(sys.argv[2:])
         deckid = ' '.join(args.deckid)
         if len(args.deckid) != 0:
-            deck = self.db.get_deck(deckid)
-            if len(deck.cards) == 0:
+            card_list = self.db.get_deck(deckid)
+            if len(card_list.cards) == 0:
                 print("Nothing to show.")
             else:
-                for row in deck:
+                for row in card_list:
                     print(row)
         elif len(args.deckid) == 0:
             if len(self.db.list_decks()) == 0:
@@ -85,23 +87,39 @@ class Interface(object):
 
     def import_(self):
         # TODO: Finish
-        filename = ""
         deckid = ""
         vocab_language = ""
         definition_language = ""
-
-        cli = argparse.ArgumentParser(description="create a new deck.", dest='import')
-        cli.add_argument("filename", nargs="*")
+        cli = argparse.ArgumentParser(description="create a new deck.")
+        cli.add_argument("FILENAME", nargs="*")
+        cli.add_argument("--name", "-n", nargs="*", dest="NAME", help="specify the name of a deck you want to import.")
         args = cli.parse_args(sys.argv[2:])
-        filename = ''.join(args.filename)
-
+        filename = ' '.join(args.FILENAME)
+        deckid = ' '.join(args.NAME)
         if len(filename) == 0:
             filename = input("Enter filename or path you would like to import: ")
-        if not self.db.check_deck_exist(deckid):
-            self.db.create_deck(deckid)
+        csv = CsvTool(filename)
+        rows = csv.get_data()
+        languages = self.language_prompt()
+        n_languages = len(languages) - 1
+        dc = 0
+        vc = 0
+        while vc <= 0 or vc > n_languages:
+            vc = int(input("Vocabulary language (1-" + str(n_languages) + "): "))
+        vocab_language = languages[vc]
+        while dc <= 0 or dc > n_languages:
+            dc = int(input("Definition language (1-" + str(n_languages) + "): "))
+        definition_language = languages[dc]
+
+        if self.db.check_deck_exist(deckid):
+            self.db.create_deck(deckid, vocab_language, definition_language)
+            self.db.add_many_cards_to_deck(rows)
             print("SUCCESS: \'" + deckid + "\' created.")
         else:
             print("ERROR: \'" + deckid + "\' already exists in database.")
+
+
+
 
     def study(self):
         cli = argparse.ArgumentParser(description="start a new study session.")
@@ -118,3 +136,12 @@ class Interface(object):
 
 
 
+    def language_prompt(self) -> list:
+        languages = ["", "Chinese (Simplified)", "Chinese (Traditional)", "Chinese (Pinyin)", "Spanish", "English", "Hindi", "Arabic",
+                          "Portuguese", "Russian", "Japanese", "Japanese (Romanji)", "Punjabi", "German", "Javanese", "Malay", "Telugu",
+                          "Vietnamese", "Korean", "French", "Turkish", "Italian", "Thai", "Persian", "Polish",
+                          "Romanian", "Dutch", "Czech", "Swedish"]
+        for i in range(1, len(languages)):
+            print(str(i) + "\t" + languages[i])
+
+        return languages

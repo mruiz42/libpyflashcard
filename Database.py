@@ -79,11 +79,11 @@ class Database:
         self.db.execute(statement, bind)
         self.db.commit()
 
-    def list_languages(self):
-        statement = ("SELECT * FROM LANGUAGES;")
-        self.db.execute(statement)
-        languages = self.db.cursor().fetchall()
-        return languages
+    # def list_languages(self):
+    #     statement = ("SELECT * FROM LANGUAGES;")
+    #     self.db.execute(statement)
+    #     languages = self.db.cursor().fetchall()
+    #     return languages
 
     def remove_deck(self, deck_id: str):
         bind = (deck_id, )
@@ -98,6 +98,7 @@ class Database:
         self.db.commit()
 
     def check_deck_exist(self, deck_id: str) -> bool:
+        # TODO: This function sucks
         bind = (deck_id, )
         statement = ("SELECT * FROM DECKS WHERE DECK_ID=(?)")
         self.db.execute(statement, bind)
