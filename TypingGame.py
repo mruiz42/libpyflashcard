@@ -19,6 +19,7 @@ class TypingGame:
         :return: None
         """
         __TYPO__ = "!TYPO"
+        __APPEND__ = "!APPEND"
         missed_cards = list()
         correct_cards = list()
         checkpoint_indices = list()
@@ -53,6 +54,9 @@ class TypingGame:
                         if card in missed_cards:
                             missed_cards.remove(card)
                         break
+                    if user_input == __APPEND__:
+                        pass
+                        # TODO: Add user_input to database definition
                     if self.check_answer(user_input, valid_answers):
                         if card not in missed_cards:
                             missed_cards.append(card)
@@ -62,7 +66,7 @@ class TypingGame:
             if index in checkpoint_indices:
                 self.checkpoint(missed_cards)
 
-    def sanitize_answers(self, answer: str, delim: str="; ") -> list:
+    def sanitize_answers(self, answer: str, delim: str=";") -> list:
         """This function will take a delimited answer string and create a list
             while also sanitizing any punctuation characters and uppercase"""
         split_list = answer.split(delim)
