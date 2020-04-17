@@ -14,19 +14,21 @@ class Interface(object):
         # Create main parser object
         cli = argparse.ArgumentParser(prog="libpyflashcard",
                             description="libpyflashcard command line client, version " + __version__,
-        #                     usage="""main.py <command> [<args>]
-        # Commands:
-        # init       Initialize database
-        # list       List cards/decks
-        # create     Create a deck
-        # remove     Remove a deck from database
-        #                     """,
+                            usage="""main.py <command> [<args>]\nCommands:
+        \ninit       Initialize database.
+        \nlist       List cards/decks.
+        \ncreate     Create a deck.
+        \ndelete     Remove a deck from database.
+        \nimport     Import a deck from csv.
+        \nexport     Export a deck to csv.
+        \nstudy      Study a deck.
+                            """,
                             epilog="More information at: <https://github.com/mruiz42/libpyflashcard>")
         # Create parser options
         cli.add_argument("-V", "--version", dest="VERSION", help="display current running version of program.",
                          action='store_true')
         cli.add_argument("-v", "--verbose", dest="VERBOSE", help="increase verbosity of output.", action='store_true')
-        cli.add_argument("command", help="command to run.")
+        cli.add_argument("command", help="command to be run. See available commands above.")
         args = cli.parse_args(sys.argv[1:2])
         if args.command == "import":
             args.command = "import_"
