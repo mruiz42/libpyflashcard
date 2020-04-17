@@ -6,9 +6,10 @@ from Session import Session
 from Statistic import Statistic
 
 class TypingGame:
-    def __init__(self, deck: Deck, pronunciation: bool = False):
+    def __init__(self, deck: Deck, pronunciation: bool = False, shuffle: bool = False):
         self.session = Session()
         self.show_pronun = pronunciation
+        self.is_shuffle = shuffle
         self.deck = deck
         self.play()
 
@@ -25,6 +26,9 @@ class TypingGame:
         for i in range(0, len(self.deck.cards), 10):
             checkpoint_indices.append(i)
         # os.system('cls')  # on windows
+        if self.is_shuffle:
+            self.deck.shuffle()
+
         for card in self.deck.cards:
             os.system('clear')
             index += 1
@@ -38,10 +42,10 @@ class TypingGame:
                 print("Correct!")
                 card.stat.num_correct+=1
                 card.stat.num_attempts+=1
-                input("Answer: " + card.definition + "\nPress any key to continue...")
+                input("Answer: " + card.definition + "\nPress ENTER to continue...")
             else:
                 os.system('clear')
-                print("Incorrect")
+                print(user_input + "Incorrect")
                 user_input = ""
                 while True:
                     user_input = input("Answer: " + card.definition + "\nEnter the correct answer or '!TYPO': ")
