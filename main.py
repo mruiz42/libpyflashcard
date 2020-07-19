@@ -9,6 +9,6 @@ __database__ = "vocab2.db"
 
 if __name__ == "__main__":
     # Load database connection from file
-    db = Database(__database__)
+    db = Database(__database__, __version__)
     # Initialize interface connection
     Interface(db)

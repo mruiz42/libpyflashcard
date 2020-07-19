@@ -10,7 +10,7 @@ class Database:
         self.path = path
         self.db = sqlite3.connect(self.path)
         self.cur = self.db.cursor()
-        self.db.text_factory = str
+        self.db.text_factory = str()
 
     def close(self):
         self.db.close()
@@ -122,3 +122,11 @@ class Database:
         statement = ("INSERT INTO CARDS (DECK_ID, IS_STARRED, VOCABULARY, DEFINITION, PRONUNCIATION)"
                      "VALUES(?, ?, ?, ?, ?);")
         self.db.executemany(statement, cards)
+
+    def update_card(self, card: Card):
+        bind = (card.deck_id, card.is_starred, card.vocabulary, card.definition, card.pronunciation, )
+        statement = ("UPDATE CARDS SET DECK_ID=?, IS_STARRED=?, VOCABULARY=?, DEFINITION=?, PRONUNCIATION=? WHERE DECK_ID=? AND CARD_ID=?;")
+        pass
+
+    def update_cards(self, cards: tuple):
+        pass

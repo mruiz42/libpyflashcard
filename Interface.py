@@ -5,15 +5,12 @@ from CsvTool import CsvTool
 import datetime
 import sqlite3
 
-__version__ = "0.1.4"
-
-
 class Interface(object):
-    def __init__(self, db):
+    def __init__(self, db, version):
         self.db = db
         # Create main parser object
         cli = argparse.ArgumentParser(prog="libpyflashcard",
-                            description="libpyflashcard command line client, version " + __version__,
+                            description="libpyflashcard command line client, version " + version,
                             usage="""main.py <command> [<args>]\nCommands:
         \ninit       Initialize database.
         \nlist       List cards/decks.
@@ -145,9 +142,12 @@ class Interface(object):
             deckid = input("Enter name of deck you would like to study: ")
         deck = self.db.get_deck(deckid)
         if len(deck.cards) > 0:
-            TypingGame(deck, args.PRONUNCIATION, args.SHUFFLE)
+            TypingGame(deck, self.db, args.PRONUNCIATION, args.SHUFFLE)
         else:
             print("ERROR: \'" + deckid + "\' does not exists in database.")
+
+
+
 
     def language_prompt(self) -> list:
         languages = ["", "Chinese (Simplified)", "Chinese (Traditional)", "Chinese (Pinyin)", "Spanish", "English", "Hindi", "Arabic",
